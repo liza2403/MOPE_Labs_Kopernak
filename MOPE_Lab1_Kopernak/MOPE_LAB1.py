@@ -53,7 +53,16 @@ print("Еталонне значення Y_et = ", y_et)
 y = []
 for i in range(8):
     y.append((c[i][3]-y_et)*(c[i][3]-y_et))
+print("\nДодаткове завдання - реалізація amin:")
+print(y)
+y_min=y[0]
+for i in range(0,len(y)):
+    if y[i]<y_min:
+        y_min=y[i]
+print("Результат власної функії = ",y_min)
 
+print("\nРезультат amin:")
 y = np.amin(y)
+
 print("Точка плану Y = ", y)
 
