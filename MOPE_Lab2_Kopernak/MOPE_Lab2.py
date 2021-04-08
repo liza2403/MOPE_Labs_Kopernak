@@ -75,6 +75,12 @@ class Experiment:
                     if R > self.Rcritical[self.m]:
                         print('Variance isn\'t stable!')
                         return False
+        if self.m <9:
+            print("\nAdditional task")
+            print("It's alright. M is less than 9\n")
+        else:
+            raise Exception ("Well, your freaking m should be less than nine!")
+
         return True
 
     def find_b(self) -> np.array:
@@ -115,7 +121,7 @@ class Experiment:
             for i in range(self.N)])
 
     def check_results(self) -> None:
-        print('Матриця планування:\n', self.plan_matrix)
+        print('Матриця планування:\n', self.plan_matrix) 
         print('Нормована матриця:\n', self.norm_matrix)
         print('Матриця Y:\n', self.y_matrix)
         print('\nНормовані коефіцієнти:     ', self.b)
