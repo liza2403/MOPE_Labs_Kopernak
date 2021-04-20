@@ -78,6 +78,7 @@ class FractionalExperiment:
             res.append(s)
         return res
 
+
     def kohren(self):
         """Перевірка однорідності дисперсій за критерієм Кохрена"""
         q1 = self.q / self.f1
@@ -86,6 +87,15 @@ class FractionalExperiment:
         s = self.dispersion()
         Gp = max(s) / sum(s)
         return Gp, G_cr
+
+    def neodnorinda_disp(self):
+        # f1= m -1; f2 = N==> f1=8-1=7, f2 =7 (from G table ==> 0.3535)
+        ne = 0
+        s = self.dispersion()
+        Gp = max(s) / sum(s)
+        if Gp>0.3535:
+            ne+=1
+        return ne
 
     def student(self):
         """Перевірка знащущості коефіцієнтів за критерієм Стьюдента"""
@@ -141,13 +151,16 @@ class FractionalExperiment:
 
         print('\nПеревірка за критерієм Кохрена')
         Gp, G_kr = self.kohren()
+        ne = self.neodnorinda_disp()
         print(f'Gp = {Gp}')
+        print('\nIf dispercion  is homogeneous, then the value would be 0:', ne)
         if Gp < G_kr:
             print(f'З ймовірністю {1-self.q} дисперсії однорідні.')
         else:
             print("Необхідно збільшити кількість дослідів")
             self.m += 1
             FractionalExperiment(self.n, self.m)
+
 
 
         fisher = partial(f.ppf, q=1 - 0.05)
@@ -161,6 +174,16 @@ class FractionalExperiment:
             print('Математична модель не адекватна експериментальним даним')
 
 
-experiment = FractionalExperiment(7, 8)
+i = 0
+while i < 100:
+    experiment = FractionalExperiment(7, 8)
+    experiment.check()
+    i += 1
+    print("\n----", i, "----")
+    neod = experiment.neodnorinda_disp()
+    disp = 0
+    if (neod != 0):
+        disp=disp+neod
+    print("The number of nonhomogeneous dispercion ",disp)
 experiment.check()
 
