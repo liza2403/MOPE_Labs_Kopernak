@@ -320,7 +320,7 @@ def main(n, m):
     if not main_1:
         interaction_effect = with_interaction_effect(n, m)
         if not interaction_effect:
-            main(n, m)
+            main(n, m+1)
 
 
 if __name__ == '__main__':
