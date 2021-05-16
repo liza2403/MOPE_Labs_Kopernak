@@ -5,6 +5,7 @@ from scipy.stats import f, t, ttest_ind, norm
 from functools import reduce
 from itertools import compress
 import numpy as np
+import time
 
 
 raw_naturalized_factors_table = [[12, 5, -3],
@@ -64,6 +65,7 @@ def x_i(i):
 
 def cochran_criteria(m, N, y_table):
     print("\nПеревірка рівномірності дисперсій за критерієм Кохрена: m = {}, N = {} для таблиці y_table".format(m, N))
+    t1 = time.time()
     y_variations = [np.var(i) for i in y_table]
     max_y_variation = max(y_variations)
     gp = max_y_variation/sum(y_variations)
@@ -72,6 +74,9 @@ def cochran_criteria(m, N, y_table):
     p = 0.95
     q = 1-p
     gt = get_cochran_value(f1,f2, q)
+    t2 = time.time()
+    global t_final_cochran
+    t_final_cochran = t2 -t1
     print("Gp = {}; Gt = {}; f1 = {}; f2 = {}; q = {:.2f}".format(gp, gt, f1, f2, q))
     if gp < gt:
         print("Gp < Gt => дисперсії рівномірні - все правильно")
@@ -82,8 +87,10 @@ def cochran_criteria(m, N, y_table):
 
 
 def student_criteria(m, N, y_table, beta_coefficients):
+    t11 = time.time()
     print("\nПеревірка значимості коефіцієнтів регресії за критерієм Стьюдента: m = {}, N = {} "
           "для таблиці y_table та нормалізованих факторів".format(m, N))
+
     average_variation = np.average(list(map(np.var, y_table)))
 
     y_averages = np.array(list(map(np.average, y_table)))
@@ -96,6 +103,9 @@ def student_criteria(m, N, y_table, beta_coefficients):
     q = 0.05
 
     t = get_student_value(f3, q)
+    t22 = time.time()
+    global t_final_student
+    t_final_student = t22 -t11
     importance = [True if el > t else False for el in list(t_i)]
 
     # print result data
@@ -121,6 +131,7 @@ def calculate_theoretical_y(x_table, b_coefficients, importance):
 
 
 def fisher_criteria(m, N, d, naturalized_x_table, y_table, b_coefficients, importance):
+    t111 = time.time()
     f3 = (m - 1) * N
     f4 = N - d
     q = 0.05
@@ -134,6 +145,9 @@ def fisher_criteria(m, N, d, naturalized_x_table, y_table, b_coefficients, impor
     s_v = np.average(y_variations)
     f_p = float(s_ad/s_v)
     f_t = get_fisher_value(f3, f4, q)
+    t222 = time.time()
+    global t_final_fisher
+    t_final_fisher = t222 -t111
 
     print("\nПеревірка адекватності моделі за критерієм Фішера: m = {}, "
           "N = {} для таблиці y_table".format(m, N))
@@ -162,3 +176,8 @@ def get_student_value(f3, q):
 
 def get_fisher_value(f3,f4, q):
     return Decimal(abs(f.isf(q,f4,f3))).quantize(Decimal('.0001')).__float__()
+
+def times():
+    print("\n---------------------Additional task---------------------\n")
+    result_final = t_final_fisher + t_final_cochran + t_final_student
+    print("Search time for significant coefficients:", + result_final)
