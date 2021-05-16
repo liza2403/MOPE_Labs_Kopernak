@@ -1,5 +1,6 @@
 import random
 
+
 from Lab5_2 import *
 
 factors_table = generate_factors_table(raw_factors_table)
@@ -28,4 +29,8 @@ print(list(map(int,beta_coefficients)))
 
 importance = student_criteria(m, N, y_arr, beta_coefficients)
 d = len(list(filter(None, importance)))
+
+
 fisher_criteria(m, N, d, naturalized_factors_table, y_arr, beta_coefficients, importance)
+
+times()
